@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DispatchType } from '../configStore';
 import axios from 'axios';
-import { ProductDetailModel } from '../../Models/ProductModel';
+import { ProductDetailModel, ProductSearchModel } from '../../Models/ProductModel';
 import { http } from '../../utils/config';
+import { displayLoadingAction, hideLoadingAction } from '../LoadingReducer/loadingReducer';
 
 export interface ProductModel {
     id: number;
@@ -23,7 +24,7 @@ export interface ProductModel {
 export type ProductState = {
     arrProduct: ProductModel[],
     productDetail: ProductDetailModel | null,
-
+    arrProductSearch: ProductSearchModel[] | null
 }
 
 const initialState: ProductState = {
@@ -43,6 +44,7 @@ const initialState: ProductState = {
         "image": "https://shop.cyberlearn.vn/images/vans-black-black.png"
     },]
     , productDetail: null,
+    arrProductSearch: null,
 }
 
 const ProductReducer = createSlice({
@@ -51,6 +53,10 @@ const ProductReducer = createSlice({
     reducers: {
         setArrProductAction: (state: ProductState, action: PayloadAction<ProductModel[]>) => {
             state.arrProduct = action.payload
+        },
+
+        setArrProductSearchAction: (state: ProductState, action) => {
+            state.arrProductSearch = action.payload
         }
     },
     extraReducers(builder) {
@@ -64,17 +70,17 @@ const ProductReducer = createSlice({
         builder.addCase(getProductDetailApi.fulfilled, (state: ProductState, action: PayloadAction<ProductDetailModel>) => {
             // tắt loading
             state.productDetail = action.payload
-        });
+        })
 
         // rejected : thất bại
         builder.addCase(getProductDetailApi.rejected, (state, action) => {
             // tắt loading
 
-        });
+        })
     },
 });
 
-export const { setArrProductAction } = ProductReducer.actions
+export const { setArrProductAction, setArrProductSearchAction } = ProductReducer.actions
 
 export default ProductReducer.reducer
 
@@ -99,9 +105,30 @@ export const getProductApi = () => {
     }
 }
 
+export const getProductSearchAPI = (keyword: string) => {
+    return async (dispatch: DispatchType) => {
+        try {
+            dispatch(displayLoadingAction());
+            const response = await http.get(`/Product?keyword=${keyword}`);
+            dispatch(setArrProductSearchAction(response?.data?.content));
+        } catch (error) {
+
+        } finally {
+            dispatch(hideLoadingAction());
+        }
+
+    }
+
+}
+
 // cách 2 dùng create.asyncThunk 
 
 export const getProductDetailApi = createAsyncThunk("ProductReducer/getProductDetailApi", async (id: string) => {
     const response = await http.get(`/Product/getbyid?id=${id}`)
     return response.data?.content;
 })
+
+// export const getProductSearchAPI = createAsyncThunk("ProductReducer/getProductSearchAPI", async (keyword: string): Promise<ProductSearchModel[]> => {
+//     const response = await http.get(`/Product?keyword=${keyword}`);
+//     return response?.data?.content;
+// })

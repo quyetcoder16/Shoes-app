@@ -1,12 +1,14 @@
 // base
 
-@import url("./base/_base.scss");
+@import "./base/_base.scss";
 
 // components
 
-@import url("./components/_header.scss");
-@import url("./components/_footer.scss");
+@import "./components/_header.scss";
+@import "./components/_footer.scss";
 
 // page
+
+@import "./pages/search";
 
 // template

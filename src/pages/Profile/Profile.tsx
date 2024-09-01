@@ -26,7 +26,7 @@ export default function Profile({ }: Props) {
     }, [])
 
     return (
-        <div className='container'>
+        <div className='container mt-5' style={{ minHeight: 390 }}>
             <h3>Profile</h3>
             <div className='row'>
                 <div className='col-4'>

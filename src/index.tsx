@@ -22,6 +22,7 @@ import Detail from './pages/Detail/Detail';
 import Profile from './pages/Profile/Profile';
 import Search from './pages/Search/Search';
 import Carts from './pages/Carts/Carts';
+import Loading from './components/Loading/Loading';
 
 
 const root = ReactDOM.createRoot(
@@ -29,6 +30,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Provider store={store}>
+    <Loading />
     <BrowserRouter >
       <Routes>
         <Route path='' element={<HomeTemplate />}>
