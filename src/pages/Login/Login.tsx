@@ -1,10 +1,15 @@
 import React from 'react'
+import FacebookLogin from 'react-facebook-login'
+
 import { DispatchType } from '../../redux/configStore';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { UserLoginModel } from '../../Models/userModel';
 import * as yup from 'yup'
+import { loginAsyncAPI, loginFacebookApi } from '../../redux/UserReducer/userReducer';
 type Props = {}
+
+
 
 export default function Login({ }: Props) {
 
@@ -20,12 +25,19 @@ export default function Login({ }: Props) {
         }),
         onSubmit: (values: UserLoginModel) => {
             console.log(values);
-            // const actionAsyncLogin = loginAsyncApi(values);
-            // dispatch(actionAsyncLogin);
+            const actionAsyncLogin = loginAsyncAPI(values);
+            dispatch(actionAsyncLogin);
 
         }
     })
 
+    const responseFacebook = (res: any) => {
+        console.log(res);
+        if (res?.accessToken) {
+            const actionThunk = loginFacebookApi(res.accessToken);
+            dispatch(actionThunk);
+        }
+    }
     return (
         <form className='container' onSubmit={frmLogin.handleSubmit}>
             <div className='d-flex justify-content-center align-items-center'>
@@ -46,7 +58,7 @@ export default function Login({ }: Props) {
                     </div>
                     <div className='form-group mt-2'>
                         {/* <FacebookLogin
-                            appId="1160192297928819"
+                            appId="503504662404221"
                             autoLoad={true}
                             fields="name,email,picture"
                             callback={responseFacebook}

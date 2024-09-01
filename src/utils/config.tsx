@@ -88,8 +88,11 @@ export const http = axios.create({
 // cấu hình cho tất cả request gửi đi
 // http.interceptor
 
-http.interceptors.request.use(function (config) {
+http.interceptors.request.use((config) => {
     // Do something before request is sent
+
+    config.headers.Authorization = 'Bearer ' + settings.getStore(ACCESS_TOKEN)
+
     return config;
 }, function (error) {
     // Do something with request error
@@ -106,11 +109,14 @@ http.interceptors.response.use((response) => {
     // Do something with response error
     // hàm cấu hình cho tất cả các lỗi trả về
 
-    if (error?.response?.status == 400 || error?.response?.status == 404) {
-        // chuyển hướng về trang chủ
+    //Hàm cấu hình cho tất cả lỗi nhận về 
+    if (error.response?.status === 400 || error.response?.status === 404) {
+        //Chuyển hướng trang về trang chủ 
         window.location.replace('/');
-        // window.history.back(); // Quay lại trang trước đó
-        // window.location.replace('/login'); // Chuyển hướng đến trang đăng nhập và không cho phép quay lại
+    }
+
+    if (error.response?.status === 401 || error.response?.status === 403) {
+        window.location.replace('/login');
     }
 
     return Promise.reject(error);

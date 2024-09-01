@@ -1,51 +1,81 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React from "react";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import { RootState } from "../redux/configStore";
+import { ACCESS_TOKEN, settings, USER_LOGIN } from "../utils/config";
 
-type Props = {}
 
-export default function Header({ }: Props) {
-    return (
-        <div className='header'>
-            <section className='logo-header'>
-                <div className='logo'>
-                    <NavLink className={'logo-link'} to={"/"}>
-                        <img src='./img/logo.png' alt='' />
+type Props = {};
+
+export default function Header(props: Props) {
+
+    const { userLogin } = useSelector((state: RootState) => state.userReducer);
+
+    const renderLoginUI = () => {
+        if (userLogin) {
+            return <>
+                <div className="login flex-item">
+                    <NavLink className={"carts-link"} to="/profile">
+                        {userLogin.email}
                     </NavLink>
                 </div>
-                <div className='nav-bar-search'>
-                    <div className='search flex-item'>
-                        <NavLink to={'search'} className={'search-link'}>
-                            <i className='fa fa-search'></i> Search
+                <div className="flex-item">
+                    <a onClick={() => {
+                        //Đăng xuất
+                        settings.eraseCookie(ACCESS_TOKEN);
+                        settings.eraseCookie(USER_LOGIN);
+                        settings.clearStorage(ACCESS_TOKEN);
+                        settings.clearStorage(USER_LOGIN);
+                        window.location.reload(); // load lại trang
+                    }} style={{ cursor: 'pointer' }} className="carts-link">
+                        Logout
+                    </a>
+                </div>
+            </>
+        }
+        return <div className="login flex-item">
+            <NavLink className={"carts-link"} to="/login">
+                Login
+            </NavLink>
+        </div>
+
+    }
+    return (
+        <div className="header">
+            <section className="logo-header">
+                <div className="logo">
+                    <NavLink className={"logo-link"} to="">
+                        <img height={50} src="./img/logo.jpg" alt="logo" />
+                    </NavLink>
+                </div>
+                <div className="nav-bar-search">
+                    <div className="search flex-item">
+                        <NavLink className={"search-link"} to={"/search"}>
+                            <i className="fa fa-search"></i> Search
                         </NavLink>
                     </div>
-                    <div className='carts flex-item'>
-                        <NavLink to={'/carts'} className={'carts-link'}>
-                            <i className='fa fa-cart-plus'></i> (1)
+                    <div className="carts flex-item">
+                        <NavLink className={"carts-link"} to="/carts">
+                            <i className="fa fa-cart-plus"></i> (1)
                         </NavLink>
                     </div>
-                    <div className='login flex-item'>
-                        <NavLink to={'/login'} className={'login-link'}>
-                            Login
-                        </NavLink>
-                    </div>
-                    <div className='register flex-item'>
-                        <NavLink to={'/register'} className={'register-link'}>
+                    {renderLoginUI()}
+                    <div className="register flex-item">
+                        <NavLink className={"carts-link"} to="/register">
                             Register
                         </NavLink>
                     </div>
                 </div>
             </section>
-            <section className='menu'>
-                <nav className='nav-menu'>
-                    <NavLink className='mx-2' to={""} >Home</NavLink>
-                    <NavLink className='mx-2' to={""} >Men</NavLink>
-                    <NavLink className='mx-2' to={""} >woman</NavLink>
-                    <NavLink className='mx-2' to={""} >Kid</NavLink>
-                    <NavLink className='mx-2' to={""} >Sport</NavLink>
-
-
+            <section className="menu d-flex align-items-center">
+                <nav className="nav-menu">
+                    <NavLink className="mx-2" to="">Home</NavLink>
+                    <NavLink className="mx-2" to="">Men</NavLink>
+                    <NavLink className="mx-2" to="">Woman</NavLink>
+                    <NavLink className="mx-2" to="">Kid</NavLink>
+                    <NavLink className="mx-2" to="">Sport</NavLink>
                 </nav>
             </section>
         </div>
-    )
+    );
 }
