@@ -10,7 +10,10 @@ import { Provider } from 'react-redux';
 import { store } from './redux/configStore';
 // setup react-router-dom
 
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import {
+  BrowserRouter,
+  Navigate, Route, Routes,
+} from 'react-router-dom'
 import HomeTemplate from './templates/HomeTemplate';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
@@ -26,7 +29,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter >
       <Routes>
         <Route path='' element={<HomeTemplate />}>
           <Route index element={<Home />}></Route>
